@@ -1,18 +1,45 @@
 class Decoder:
-    def __init__(self, Op, Funct, Rd):
-        self.controls = None
-        self.Branch = None
-        self.ALUOp = None
-        self.FlagW = []
-        self.ALUControl = []
-        self.ImmSrc = []
-        self.RegSrc = []
-        self.PCS = None
-        self.RegW = None
-        self.MemW = None
-        self.MemtoReg = None
-        self.ALUSrc = None
-        self.decode(Op, Funct, Rd)
+    def __init__(self, Op):
+        if Op == '0000011':
+            self.RegWrite = '1'
+            self.ImmSrc = '00'
+            self.ALUSrc = '1'
+            self.MemWrite = '0'
+            self.ResultSrc = '1'
+            self.Branch = '0'
+            self.ALUOp = '00'
+        elif Op == '0100011':
+            self.RegWrite = '0'
+            self.ImmSrc = '01'
+            self.ALUSrc = '1'
+            self.MemWrite = '1'
+            self.ResultSrc = 'x'
+            self.Branch = '0'
+            self.ALUOp = '00'
+        elif Op == '0010011':
+            self.RegWrite = '1'
+            self.ImmSrc = 'xx'
+            self.ALUSrc = '0'
+            self.MemWrite = '0'
+            self.ResultSrc = '0'
+            self.Branch = '0'
+            self.ALUOp = '10'
+        elif Op == '0110011':
+            self.RegWrite = '1'
+            self.ImmSrc = 'xx'
+            self.ALUSrc = '0'
+            self.MemWrite = '0'
+            self.ResultSrc = '0'
+            self.Branch = '0'
+            self.ALUOp = '10'
+        elif Op == '1100011':
+            self.RegWrite = '0'
+            self.ImmSrc = '10'
+            self.ALUSrc = '0'
+            self.MemWrite = '0'
+            self.ResultSrc = 'x'
+            self.Branch = '1'
+            self.ALUOp = '01'
 
     def decode(self, Op, Funct, Rd):
         # Main Decoder

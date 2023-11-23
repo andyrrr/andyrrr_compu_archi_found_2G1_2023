@@ -1,5 +1,7 @@
+import time
 from tkinter import *
-from tkinter.ttk import Combobox
+from tkinter.ttk import Combobox, Treeview
+
 
 def iniciar_simulacion():
     arquitectura = dropdown.get()
@@ -7,18 +9,26 @@ def iniciar_simulacion():
     print (arquitectura)
     print(modo)
 
-    global ciclo_actual, pc_actual
-
-    
-
-
-
+    global ciclo_actual, pc_actual, tiempo_inicial
+    ciclo_actual = 3
+    tiempo_inicial = time.time()
+    pc_actual = 0x0003
     # Actualizar la información periódicamente
     actualizar_informacion()
 
 def actualizar_informacion():
-    print("info")
+    tiempo_total = time.time() - tiempo_inicial
+    ciclo_ejecucion.set(str(ciclo_actual))
+    tiempo_ejecucion.set("{:.2f}".format(tiempo_total))
+    valor_pc.set("0x{:X}".format(pc_actual))
 
+    for reg in registros:
+        tabla_registros.insert("", END, values=reg)
+
+    for mem in memoria:
+        tabla_memoria.insert("", END, values=mem)
+
+    root.update()
 
 def cargar_imagen(ruta_imagen):
     imagen = PhotoImage(file=ruta_imagen).subsample(2)
@@ -45,7 +55,7 @@ def actualizar_imagen(event, etiqueta):
 
 
 root = Tk()
-root.geometry("600x600")
+root.geometry("1200x600")
 
 # Frame superior
 opciones_frame = Frame(root,  height=200)
@@ -105,7 +115,7 @@ ef3.pack(side="left", fill="both", expand=True)
 
 # Variables para almacenar la información
 ciclo_ejecucion = StringVar()
-tiempo_inicio = StringVar()
+tiempo_ejecucion = StringVar()
 valor_pc = StringVar()
 
 # Etiquetas para mostrar la información
@@ -113,11 +123,45 @@ ciclo_l = Label(ef1, text="Ciclo de Ejecución:").pack(pady=5)
 ciclo_t = Label(ef1, textvariable=ciclo_ejecucion).pack(pady=5)
 
 tiempo_l = Label(ef1, text="Tiempo desde el Inicio (s):").pack(pady=5)
-tiempo_t = Label(ef1, textvariable=tiempo_inicio).pack(pady=5)
+tiempo_t = Label(ef1, textvariable=tiempo_ejecucion).pack(pady=5)
 
 pc_l = Label(ef1, text="Valor del PC:").pack(pady=5)
 pc_t = Label(ef1, textvariable=valor_pc).pack(pady=5)
 
+
+Label(ef2, text="Registros").pack(pady=5, side='top')
+Label(ef3, text="Memoria").pack(pady=5, side='top')
+
+
+# Crear un Treeview con dos columnas
+tabla_registros = Treeview(ef2, columns=("Label", "Valor"), show="headings")
+tabla_registros.heading("Label", text="Registro")
+tabla_registros.heading("Valor", text="Valor")
+tabla_registros.pack(pady=10, side='left')
+
+
+# Crear un Treeview con dos columnas
+tabla_memoria = Treeview(ef3, columns=("Label", "Valor"), show="headings")
+tabla_memoria.heading("Label", text="Memoria")
+tabla_memoria.heading("Valor", text="Valor")
+tabla_memoria.pack(pady=10, side='left')
+
+# Agregar elementos al Treeview
+memoria = []
+
+
+# Agregar elementos al Treeview
+registros = []
+
+
+for i in range(32):
+    nuevo_elemento = ("x" + str(i),"Vacio")
+    registros.append(nuevo_elemento)
+
+
+for i in range(1000):
+    nuevo_elemento = ("0x" + str(i),"Vacio")
+    memoria.append(nuevo_elemento)
 
 
 # Botón "Start"

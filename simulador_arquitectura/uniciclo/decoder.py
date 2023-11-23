@@ -56,8 +56,3 @@ class Decoder:
         # PC Logic
         self.PCS = (Rd == 0b1111 and RegW) or self.Branch
 
-# Uso del decodificador
-Op = 0b00
-Funct = 0b110110
-Rd = 0b0101
-decoder_instance = Decoder(Op, Funct, Rd)
